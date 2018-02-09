@@ -7,11 +7,32 @@ const yargs = require('yargs');
 //import from local file
 const notes = require('./notes');
 
-const argv = yargs.argv;
+const titleOptions = {
+    describe : 'Title of Note',
+    demand : true,
+    alias : 't'
+};
+
+const argv = yargs
+.command('add','Add a new note',{
+   title : titleOptions,
+    body : {
+        describe: 'Body of note',
+        demand: true,
+        alias: 'b'
+    }
+})
+.command('list','list of all notes')
+.command('read','Read a note',{
+    title: titleOptions
+})
+.command('remove','Remove a note',{
+    title: titleOptions
+})
+.argv;
+
 var proc = process.argv[2];
-console.log("process:", proc);
-console.log('process: ',process.argv);
-console.log('yargs: ', argv);
+
 
 //functions for performing differnet operations.
 if(proc === 'add'){
@@ -19,9 +40,7 @@ if(proc === 'add'){
    if(note){
 
        console.log('Note created');
-       console.log('----');
-       console.log(`Title: ${note.title}`);
-       console.log(`Body: ${note.body}`);
+        notes.logNote(note);
     
    }else{
 
@@ -30,10 +49,32 @@ if(proc === 'add'){
 
 }else if (proc === 'list'){
 
-    notes.listFun(argv.title, argv.body);
+    var allNotes = notes.getAll();
+    console.log(`printing ${allNotes.length} note(s).`);
+    allNotes.forEach((note) => notes.logNote(note));
 
-}else{
+}else if(proc === 'read'){
 
-    console.log('command not found');
+    var note = notes.getNote(argv.title);
+    if(note){
+
+        console.log('Note Readed');
+        notes.logNote(note);
+    
+    }else{
+        console.log('----');
+        console.log('Note not Found');
+     
+    }
+
+    }else if(proc === 'remove'){
+
+        var noteRemoved = notes.removeNote(argv.title);
+        var massage = noteRemoved ? 'Note was Removed' : 'No such note found';
+        console.log(massage);
+
+    }else{
+
+        console.log('command not found');
     
 }

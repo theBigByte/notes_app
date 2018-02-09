@@ -35,11 +35,13 @@ if(duplicateNotes.length === 0){
 };
 
 var getAll = () => {
-    console.log('getting all notes')
+    return fetchNotes();
 };
 
 var getNote = (title) => {
-    console.log('getting note: ', title);
+   var notes = fetchNotes();
+   var readFilteredNotes = notes.filter((note) => note.title === title);
+   return readFilteredNotes[0];
 }
 
 var removeNote = (title) => {
@@ -48,9 +50,17 @@ var removeNote = (title) => {
    saveNotes(filteredNotes);
 };
 
+var logNote = (note) => {
+    debugger;
+    console.log('----');
+    console.log(`Title: ${note.title}`);
+    console.log(`Body: ${note.body}`);
+};
+
 module.exports = {
     addNote,
     getAll,
     getNote,
-    removeNote
+    removeNote,
+    logNote
 };
